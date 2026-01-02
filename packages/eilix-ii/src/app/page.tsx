@@ -20,9 +20,9 @@ export default function EILIX() {
         body: JSON.stringify({ topic: topic.trim() })
       });
       
-      const data = await response.json();
+      const data = await response.json() as { tweet?: string };
       setTweet(data.tweet || 'Failed to generate tweet');
-    } catch (error) {
+    } catch {
       setTweet('Error generating tweet');
     } finally {
       setLoading(false);
@@ -80,4 +80,6 @@ export default function EILIX() {
     </div>
   );
 }
+
+
 

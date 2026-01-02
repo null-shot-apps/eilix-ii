@@ -34,7 +34,8 @@ IMPORTANT:
 
 export async function POST(request: NextRequest) {
   try {
-    const { topic } = await request.json();
+    const body = await request.json() as { topic?: string };
+    const { topic } = body;
     
     if (!topic || typeof topic !== 'string') {
       return NextResponse.json(
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data = await response.json();
+    const data = await response.json() as { content: Array<{ text: string }> };
     const tweet = data.content[0].text.trim();
 
     return NextResponse.json({ tweet });
@@ -92,4 +93,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
 
