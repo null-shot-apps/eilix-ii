@@ -62,18 +62,22 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1024,
-        system: SYSTEM_PROMPT,
         messages: [
           {
             role: 'user',
-            content: topic
+            content: `${SYSTEM_PROMPT}\n\nUser topic:\n${topic}`
           }
         ]
       })
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
+      const error = await response.text();
+      console.error('Anthropic API error:', error);
+      return NextResponse.json(
+        { error: 'Failed to generate tweet' },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
@@ -81,9 +85,9 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ tweet });
   } catch (error) {
-    console.error('Error generating tweet:', error);
+    console.error('Error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate tweet' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
